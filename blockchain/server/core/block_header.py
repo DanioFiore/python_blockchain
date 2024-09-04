@@ -13,9 +13,11 @@ class BlockHeader:
         self.block_hash = ''
 
     def mine(self):
-        # in order to create the block hash, we have to concatenate all together and pass the fields as an input to hash256 that will generate an hash and that hash will check if it has the leading 0000 or not
+        # in order to create the block hash, we have to concatenate all together and pass the fields as an input to hash256 that will generate an hash and that hash will check if it has the leading 0000 or not. To generate a new hash in every loop, the only thing we can do is to increment the nonce. The loop will continue until we have 0000 leadings
         while (self.block_hash[0:4]) != '0000':
             # we have to pass all as a string, so cast all the vars that are not string and encode all
             # the function will return a response in a bite format so we have to convert it in hexadecial
             # like this we can have the block hash
             self.block_hash = hash256((str(self.version) + self.previous_block_hash + self.merkle_root + str(self.timestamp) + self.bits + str(self.nonce)).encode()).hex()
+            self.nonce += 1
+            print(f"Mining started {self.nonce}", end = '/r')
