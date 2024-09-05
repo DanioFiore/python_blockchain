@@ -1,4 +1,4 @@
-from blockchain.server.utils.utils import hash256
+from Blockchain.server.tools.tools import hash256
 
 class BlockHeader:
     def __init__(self, version, previous_block_hash, merkle_root, timestamp, bits):

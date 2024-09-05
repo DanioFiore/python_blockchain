@@ -3,9 +3,9 @@ import sys
 # all our modules now are in python_blockchain folder
 sys.path.append('/home/danio/personal/wa/python_blockchain')
 
-from blockchain.server.core.block import Block
-from blockchain.server.core.block_header import BlockHeader
-from blockchain.server.utils.utils import hash256
+from block import Block
+from Blockchain.server.core.block_header import BlockHeader
+from Blockchain.server.tools.tools import hash256
 import time
 
 # manual hash of the genesis block
