@@ -20,4 +20,4 @@ class BlockHeader:
             # like this we can have the block hash
             self.block_hash = hash256((str(self.version) + self.previous_block_hash + self.merkle_root + str(self.timestamp) + self.bits + str(self.nonce)).encode()).hex()
             self.nonce += 1
-            print(f"Mining started {self.nonce}", end = '/r')
+            print(f"Mining started {self.nonce}")

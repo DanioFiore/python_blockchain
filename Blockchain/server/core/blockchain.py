@@ -3,10 +3,11 @@ import sys
 # all our modules now are in python_blockchain folder
 sys.path.append('/home/danio/personal/wa/python_blockchain')
 
-from block import Block
+from Blockchain.server.core.block import Block
 from Blockchain.server.core.block_header import BlockHeader
 from Blockchain.server.tools.tools import hash256
 import time
+import json
 
 # manual hash of the genesis block
 ZERO_HASH = '0' * 64
@@ -38,11 +39,22 @@ class Blockchain:
         # mine
         block_header.mine()
         # after mined a block, add it to the blockchain by creating an instance of our block
-        self.chain.append(Block(block_height, 1, block_header, 1, transaction))
-        print(self.chain)
+        # transform the Block class and BlockHeader class in a dictionary result
+        self.chain.append(Block(block_height, 1, block_header.__dict__, 1, transaction).__dict__)
+        print(json.dumps(self.chain, indent=4))
+    
+    def main(self):
+        # add the last block created from the mining to our chain. This process will continue always to connect block each other
+        while True:
+            # take the last block
+            last_block = self.chain[::-1]
+            block_height = last_block[0]['height'] + 1
+            prev_block_hash = last_block[0]['block_header']['block_hash']
+            self.addBlock(block_height, prev_block_hash)
 
 # in python we have __name__ that is a special built-in variable. If a file is run directly, __name__ is set to __main__ automatically. If the file is imported as a module, __name__ will be the file name
 if __name__ == '__main__':
     blockchain = Blockchain()
+    blockchain.main()
 
 
