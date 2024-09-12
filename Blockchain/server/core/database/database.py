@@ -17,7 +17,7 @@ class BaseDB:
             raw = file.readline()
         
         if len(raw) > 0:
-            json.loads(raw)
+            data = json.loads(raw)
         else:
             # if we trying to create genesis block, return empty
             data =  []
@@ -32,6 +32,7 @@ class BaseDB:
             # add the new block to the existing data
             data = data + item
         else:
+            # if data is empty, that means it's a genesis block
             data = item
 
         with open(self.file_path, "w+") as file:
@@ -43,3 +44,11 @@ class BlockchainDB(BaseDB):
         # set our "DB" file name
         self.file_name = 'blockchain'
         super().__init__()
+
+    # catch the last block
+    def lastBlock(self):
+        # read from our "DB"
+        data = self.read()
+        print(data)
+        if data:
+            return data[-1]
