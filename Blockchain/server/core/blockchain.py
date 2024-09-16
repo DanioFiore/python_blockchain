@@ -7,6 +7,8 @@ from Blockchain.server.core.block import Block
 from Blockchain.server.core.block_header import BlockHeader
 from Blockchain.server.tools.tools import hash256
 from Blockchain.server.core.database.database import BlockchainDB
+from Blockchain.server.core.transaction import CoinbaseTransaction
+
 import time
 
 # manual hash of the genesis block
@@ -36,10 +38,11 @@ class Blockchain:
 
     def addBlock(self, block_height, prev_block_hash):
         timestamp = int(time.time())
-        # create a dummy transaction for no
-        transaction = f"Danio sent {block_height} Bitcoins to Fabio"
+        
+        coinbase_instance = CoinbaseTransaction(block_height)
+        coinbase_transaction = coinbase_instance.coinbaseTX()
         # combine the hash of all transactions using merkle_root, encode the transaction and then format in hex
-        merkle_root = hash256(transaction.encode()).hex()
+        merkle_root = ' '
         # in simple terms bits are the target
         bits = 'ffff001f'
         # create the block header
@@ -48,7 +51,7 @@ class Blockchain:
         block_header.mine()
         # after mined a block, add it to the blockchain by creating an instance of our block
         # transform the Block class and BlockHeader class in a dictionary result and put all in a list
-        self.writeOnDisk([Block(block_height, 1, block_header.__dict__, 1, transaction).__dict__])
+        self.writeOnDisk([Block(block_height, 1, block_header.__dict__, 1, coinbase_transaction).__dict__])
     
     def main(self):
         # add the last block created from the mining to our chain. This process will continue always to connect block each other

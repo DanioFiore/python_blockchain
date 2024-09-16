@@ -1,0 +1,12 @@
+Coinbase transaction:
+    Only the miner can do that. The miner generate a Bitcoin and have a rewards for himself
+Little Endian and Big Endian:
+    Little Endian: the last significant byte (little end) of the data is placed at the byte with the lowest address. The rest of the data is placed in order in the next three bytes in memory
+    Big endian: the most significant byte (big end) is placed at the byte with the lowest address, **
+
+
+
+
+General Knowledge:
+    Every number lower than 256, use 1 byte. If n = 257, 2 bytes. If n = 65536, 3 bytes etc
+1:50
