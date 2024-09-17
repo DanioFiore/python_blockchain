@@ -18,7 +18,7 @@ These classes form the basic building blocks of a transaction in a blockchain sy
 """
 
 from Blockchain.server.core.script import Script
-from Blockchain.server.tools.tools import intToLittleEndian, bytesNeeded, decodeBase58
+from Blockchain.server.tools.tools import intToLittleEndian, bytesNeeded, decodeBase58, littleEndianToInt
 
 ZERO_HASH = b'\0' * 32
 REWARD = 50 # miner reward
@@ -31,6 +31,46 @@ class Transaction:
         self.transaction_ins = transaction_ins
         self.transaction_outs = transaction_outs
         self.locktime = locktime
+
+    def isCoinbase(self):
+        """
+        Check if the transaction is a coinbase transaction.
+
+        Returns:
+        bool: True if the transaction is a coinbase transaction, False otherwise.
+        """
+        if len(self.transaction_ins) != 1:
+            return False
+        first_input = self.transaction_ins[0]
+        if first_input.prev_transaction != b'\x00' * 32:
+            return False
+        if first_input.prev_index != 0xffffffff:
+            return False
+        
+        return True
+
+
+    def toDictionary(self):
+        """
+        Convert the transaction object into a dictionary format.
+
+        If the transaction is a coinbase transaction, perform necessary conversions on the attributes.
+
+        Returns:
+        dict: A dictionary representation of the transaction object.
+        """
+        if self.isCoinbase():
+            self.transaction_ins[0].prev_transaction = self.transaction_ins[0].prev_transaction.hex()
+            self.transaction_ins[0].script_sig.cmds[0] = littleEndianToInt(self.transaction_ins[0].script_sig.cmds[0])
+            self.transaction_ins[0].script_sig = self.transaction_ins[0].script_sig.__dict__
+
+        self.transaction_ins[0] = self.transaction_ins[0].__dict__
+
+        self.transaction_outs[0].script_pubkey.cmds[2] = self.transaction_outs[0].script_pubkey.cmds[2].hex()
+        self.transaction_outs[0].script_pubkey = self.transaction_outs[0].script_pubkey.__dict__
+        self.transaction_outs[0] = self.transaction_outs[0].__dict__
+
+        return self.__dict__
 
 class TransactionIn:
     def __init__(self, prev_transaction, prev_index, script_sig = None, sequence = 0xffffffff):

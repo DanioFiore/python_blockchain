@@ -9,4 +9,3 @@ Little Endian and Big Endian:
 
 General Knowledge:
     Every number lower than 256, use 1 byte. If n = 257, 2 bytes. If n = 65536, 3 bytes etc
-1:50
