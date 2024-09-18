@@ -25,22 +25,22 @@ class Account:
         G = Sha256Point(Gx, Gy)
 
         # this is our private key of 256 bits
-        private_key = secrets.randbits(256)
-        uncompressed_public_key = private_key * G
+        self.private_key = secrets.randbits(256)
+        uncompressed_public_key = self.private_key * G
         x_point = uncompressed_public_key.x
         y_point = uncompressed_public_key.y
 
         # if y_point is even, we write 0x02, otherwise we write 0x03
         # big = we write number from right to left, small = we write number from left to right
         # .num is used to get the integer value
-        compressed_key = (b'\x02' if y_point.num % 2 == 0 else b'\x02') + x_point.num.to_bytes(32, 'big')
-
+        compressed_key = (b"\x02" if y_point.num % 2 == 0 else b"\x03") + x_point.num.to_bytes(32, "big")
+    
         hsh160 = hash160(compressed_key)
         # prefix for mainnet
         main_prefix = b'\x00'
         new_address = main_prefix + hsh160
         # checksum
-        checksum = hash256(new_address[:4])
+        checksum = hash256(new_address)[:4]
         new_address += checksum
 
         BASE58_ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
@@ -63,9 +63,10 @@ class Account:
             result = BASE58_ALPHABET[mod] + result
         
         # public address is the final output after the base 58 conversion
-        public_address = prefix + result
-        print(f'Public Address: {public_address}')
-        print(f'Private Key: {private_key}')
+        self.public_address = prefix + result
+        print(f'Public Address: {self.public_address}')
+        print(f'Private Key: {self.private_key}')
+        print(f"Xpoint {x_point} \n Ypoint {y_point}")
 
 if __name__ == '__main__':
     account = Account()

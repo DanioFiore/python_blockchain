@@ -46,7 +46,7 @@ def intToLittleEndian(n, length):
     """
     return n.to_bytes(length, 'little')
 
-def littleEndianToInt(bytes):
+def littleEndianToInt(bts):
     """
     Convert a little-endian byte representation to an integer.
 
@@ -59,7 +59,7 @@ def littleEndianToInt(bytes):
     Returns:
     int: The integer represented by the little-endian byte representation.
     """
-    return int.from_bytes(bytes, 'little')
+    return int.from_bytes(bts, 'little')
 
 def decodeBase58(address):
     num = 0

@@ -24,7 +24,7 @@ ZERO_HASH = b'\0' * 32
 REWARD = 50 # miner reward
 
 PRIVATE_KEY = '65266629941907463941282944902653750347563149523387475133429792088025011748586' # private key for testing, to have it run account.py as main and copy Private Key
-MINER_ADDRESS = '1dwKaRYeHqMXu72dRrDx2AGKDBYKZueZYYvm2CWBCbr3iu7XYWcxfRx4Xd3SmKHbpf9btfzw' # miner's address for testing, to have it run account.py as main and copy Public Address
+MINER_ADDRESS = '1BzcZDjL4ZkERkVp1vpHQDd57KX4q4WQXK' # miner's address for testing, to have it run account.py as main and copy Public Address
 class Transaction:
     def __init__(self, version, transaction_ins, transaction_outs, locktime):
         self.version = version
