@@ -11,7 +11,7 @@
     sequence: Represents the sequence number. It is used to control the order of transactions in a block.
 3. TransactionOut class: This class represents an output in a transaction. It has the following attributes:
 amount: Represents the amount of money being sent to the recipient.
-script_pubkey: Represents the recipient's public key. It is used to verify the recipient's identity when the transaction is being spent.
+script_pub_key: Represents the recipient's public key. It is used to verify the recipient's identity when the transaction is being spent.
 
 
 These classes form the basic building blocks of a transaction in a blockchain system, enabling the transfer of funds between participants.
@@ -66,8 +66,8 @@ class Transaction:
 
         self.transaction_ins[0] = self.transaction_ins[0].__dict__
 
-        self.transaction_outs[0].script_pubkey.cmds[2] = self.transaction_outs[0].script_pubkey.cmds[2].hex()
-        self.transaction_outs[0].script_pubkey = self.transaction_outs[0].script_pubkey.__dict__
+        self.transaction_outs[0].script_pub_key.cmds[2] = self.transaction_outs[0].script_pub_key.cmds[2].hex()
+        self.transaction_outs[0].script_pub_key = self.transaction_outs[0].script_pub_key.__dict__
         self.transaction_outs[0] = self.transaction_outs[0].__dict__
 
         return self.__dict__
@@ -76,7 +76,10 @@ class TransactionIn:
     def __init__(self, prev_transaction, prev_index, script_sig = None, sequence = 0xffffffff):
         self.prev_transaction = prev_transaction
         self.prev_index = prev_index
-        self.script_sig = (Script() if script_sig is None else script_sig)
+        if script_sig is None:
+            self.script_sig = Script()
+        else:
+            self.script_sig = script_sig
         self.sequence = sequence
 
 class TransactionOut:

@@ -44,7 +44,7 @@ def intToLittleEndian(n, length):
     Returns:
     bytes: The little-endian byte representation of `n` with the specified length.
     """
-    return n.to_bytes(length, 'little')
+    return n.to_bytes(length, "little")
 
 def littleEndianToInt(bts):
     """
@@ -59,7 +59,7 @@ def littleEndianToInt(bts):
     Returns:
     int: The integer represented by the little-endian byte representation.
     """
-    return int.from_bytes(bts, 'little')
+    return int.from_bytes(bts, "little")
 
 def decodeBase58(address):
     num = 0
@@ -69,7 +69,6 @@ def decodeBase58(address):
         num += BASE58_ALPHABET.index(character)
 
     # it will be a total of 25 bytes and turn into a big endian
-    # FIXME: num is too big
     combined = num.to_bytes(25, byteorder='big')
     # the last 4 characters are the checksum
     checksum = combined[-4:]

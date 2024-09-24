@@ -51,7 +51,7 @@ class Blockchain:
         block_header.mine()
         # after mined a block, add it to the blockchain by creating an instance of our block
         # transform the Block class and BlockHeader class in a dictionary result and put all in a list
-        self.writeOnDisk([Block(block_height, 1, block_header.__dict__, 1, coinbase_transaction).__dict__])
+        self.writeOnDisk([Block(block_height, 1, block_header.__dict__, 1, coinbase_transaction.toDictionary()).__dict__])
     
     def main(self):
         # add the last block created from the mining to our chain. This process will continue always to connect block each other
