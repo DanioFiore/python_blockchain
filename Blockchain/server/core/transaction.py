@@ -18,7 +18,7 @@ These classes form the basic building blocks of a transaction in a blockchain sy
 """
 
 from Blockchain.server.core.script import Script
-from Blockchain.server.tools.tools import intToLittleEndian, bytesNeeded, decodeBase58, littleEndianToInt
+from Blockchain.server.tools.tools import intToLittleEndian, bytesNeeded, decodeBase58, littleEndianToInt, encodeVarInt
 
 ZERO_HASH = b'\0' * 32
 REWARD = 50 # miner reward
@@ -31,6 +31,28 @@ class Transaction:
         self.transaction_ins = transaction_ins
         self.transaction_outs = transaction_outs
         self.locktime = locktime
+
+    def serialize(self):
+        """
+        Serialize the transaction object into a byte array.
+
+        Returns:
+        bytes: A byte array representing the serialized transaction object.
+        """
+        result = intToLittleEndian(self.version, 4)
+        result += encodeVarInt(len(self.tx_ins))
+
+        for tx_in in self.transaction_ins:
+            result += tx_in.serialize()
+
+        result += encodeVarInt(len(self.transaction_outs))
+        for tx_out in self.transaction_outs:
+            result += tx_out.serialize()
+        
+        result += intToLittleEndian(self.locktime, 4)
+
+        return result
+
 
     def isCoinbase(self):
         """
@@ -82,12 +104,26 @@ class TransactionIn:
             self.script_sig = script_sig
         self.sequence = sequence
 
+    def serialize(self):
+        result = self.prev_transaction[::-1] # reverse the order
+        result += intToLittleEndian(self.prev_index, 4)
+        result += self.script_sig.serialize()
+        result += intToLittleEndian(self.sequence, 4)
+
+        return result
+
 class TransactionOut:
     def __init__(self, amount, script_pub_key):
         # the amount of money that is being sent to the recipient
         self.amount = amount
         # the recipient's public key
         self.script_pub_key = script_pub_key
+
+    def serialize(self):
+        result = intToLittleEndian(self.amount, 8)
+        result += self.script_pub_key.serialize()
+
+        return result
 
 class CoinbaseTransaction:
     def __init__(self, block_height):

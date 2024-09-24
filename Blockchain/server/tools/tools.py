@@ -76,3 +76,32 @@ def decodeBase58(address):
     if hash256(combined[:-4])[:4] != checksum:
         raise ValueError(f'Bad address {checksum} {hash256(combined[:-4])[:4]}')
     return combined[1:-4]
+
+def encodeVarInt(i):
+    """
+    Encode an integer as a varint.
+
+    This function encodes an integer into a variable-length format, which is used in the Bitcoin protocol
+    to represent integers that can take on a wide range of values. The encoding uses a single byte for
+    values less than 0xfd, two bytes for values between 0xfd and 10000, four bytes for values between
+    10000 and 100000000, and eight bytes for values between 100000000 and 10000000000000000.
+
+    Parameters:
+    i (int): The integer to be encoded. It must be a non-negative integer.
+
+    Returns:
+    bytes: The encoded varint.
+
+    Raises:
+    ValueError: If the input integer is too large (greater than or equal to 10000000000000000).
+    """
+    if i < 0xfd:
+        return bytes([i])
+    elif i < 10000:
+        return b"\xfd" + intToLittleEndian(i, 2)
+    elif i < 100000000:
+        return b"\xfe" + intToLittleEndian(i, 4)
+    elif i < 10000000000000000:
+        return b"\xff" + intToLittleEndian(i, 8)
+    else:
+        raise ValueError("Integer too large: {}".format(i))
