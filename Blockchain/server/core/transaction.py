@@ -18,7 +18,7 @@ These classes form the basic building blocks of a transaction in a blockchain sy
 """
 
 from Blockchain.server.core.script import Script
-from Blockchain.server.tools.tools import intToLittleEndian, bytesNeeded, decodeBase58, littleEndianToInt, encodeVarInt
+from Blockchain.server.tools.tools import intToLittleEndian, bytesNeeded, decodeBase58, littleEndianToInt, encodeVarInt, hash256
 
 ZERO_HASH = b'\0' * 32
 REWARD = 50 # miner reward
@@ -32,6 +32,18 @@ class Transaction:
         self.transaction_outs = transaction_outs
         self.locktime = locktime
 
+    def id(self):
+        """
+        Human-readable identifier of the transaction.
+        """
+        return self.hash().hex()
+
+    def hash(self):
+        """
+        Binary Hash of serialization of the transaction.
+        """
+        return hash256(self.serialize())[::-1]
+
     def serialize(self):
         """
         Serialize the transaction object into a byte array.
@@ -40,7 +52,7 @@ class Transaction:
         bytes: A byte array representing the serialized transaction object.
         """
         result = intToLittleEndian(self.version, 4)
-        result += encodeVarInt(len(self.tx_ins))
+        result += encodeVarInt(len(self.transaction_ins))
 
         for tx_in in self.transaction_ins:
             result += tx_in.serialize()
@@ -159,5 +171,6 @@ class CoinbaseTransaction:
         target_hash160 = decodeBase58(MINER_ADDRESS)
         target_script = Script.p2pkh_script(target_hash160)
         tx_outs.append(TransactionOut(amount = target_amount, script_pub_key = target_script))
-
-        return Transaction(1, tx_ins, tx_outs, 0)
+        coinbase_tx = Transaction(1, tx_ins, tx_outs, 0)
+        coinbase_tx.tx_id = coinbase_tx.id()
+        return coinbase_tx

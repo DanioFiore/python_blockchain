@@ -40,9 +40,9 @@ class Blockchain:
         timestamp = int(time.time())
         
         coinbase_instance = CoinbaseTransaction(block_height)
-        coinbase_transaction = coinbase_instance.coinbaseTX()
+        coinbase_tx = coinbase_instance.coinbaseTX()
         # combine the hash of all transactions using merkle_root, encode the transaction and then format in hex
-        merkle_root = ' '
+        merkle_root = coinbase_tx.tx_id
         # in simple terms bits are the target
         bits = 'ffff001f'
         # create the block header
@@ -51,7 +51,7 @@ class Blockchain:
         block_header.mine()
         # after mined a block, add it to the blockchain by creating an instance of our block
         # transform the Block class and BlockHeader class in a dictionary result and put all in a list
-        self.writeOnDisk([Block(block_height, 1, block_header.__dict__, 1, coinbase_transaction.toDictionary()).__dict__])
+        self.writeOnDisk([Block(block_height, 1, block_header.__dict__, 1, coinbase_tx.toDictionary()).__dict__])
     
     def main(self):
         # add the last block created from the mining to our chain. This process will continue always to connect block each other
