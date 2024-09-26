@@ -17,8 +17,7 @@ ZERO_HASH = '0' * 64
 VERSION = 1
 class Blockchain:
     def __init__(self):
-        self.chain = []
-        self.GenesisBlock()
+        pass
 
     def writeOnDisk(self, block):
         blockchain_db = BlockchainDB()
@@ -29,7 +28,7 @@ class Blockchain:
         return blockchain_db.lastBlock()
 
     # the genesis block is the first block in the blockchain
-    def GenesisBlock(self):
+    def genesisBlock(self):
         # the first block has height 0
         block_height = 0
         # the first block has not a previous_block_hash, so create it manually
@@ -54,6 +53,9 @@ class Blockchain:
         self.writeOnDisk([Block(block_height, 1, block_header.__dict__, 1, coinbase_tx.toDictionary()).__dict__])
     
     def main(self):
+        last_block = self.fetchLastBlock()
+        if last_block is None:
+            self.genesisBlock()
         # add the last block created from the mining to our chain. This process will continue always to connect block each other
         while True:
             # take the last block
